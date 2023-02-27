@@ -62,7 +62,7 @@ angle_errors = np.array(angle_errors)
 import matplotlib.pyplot as plt
 
 plt.scatter(avg_abs_time_error / clock_time, angle_errors, s=1)
-plt.xlabel(f"Total absolute time error [clock cycles @ {1E-6/clock_time} MHz]")
+plt.xlabel(f"Average absolute time error [clock cycles @ {1E-6/clock_time} MHz]")
 plt.ylabel("Angle error [degrees]")
 plt.grid(True)
 plt.show()
