@@ -56,48 +56,53 @@
     <a name="circuit" val="main"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="8.0"/>
-    <comp lib="0" loc="(260,170)" name="Clock"/>
-    <comp lib="1" loc="(330,220)" name="NOT Gate"/>
-    <comp lib="1" loc="(360,320)" name="NAND Gate">
+    <comp lib="0" loc="(200,260)" name="Constant"/>
+    <comp lib="0" loc="(220,140)" name="Clock"/>
+    <comp lib="0" loc="(300,260)" name="Pull Resistor"/>
+    <comp lib="1" loc="(330,200)" name="NOT Gate"/>
+    <comp lib="1" loc="(350,320)" name="NAND Gate">
       <a name="facing" val="west"/>
     </comp>
-    <comp lib="1" loc="(420,240)" name="NAND Gate"/>
-    <comp lib="1" loc="(510,220)" name="AND Gate"/>
-    <comp lib="4" loc="(650,140)" name="Counter">
+    <comp lib="1" loc="(420,220)" name="NAND Gate"/>
+    <comp lib="1" loc="(490,240)" name="AND Gate"/>
+    <comp lib="1" loc="(580,220)" name="AND Gate"/>
+    <comp lib="10" loc="(220,260)" name="Switch">
+      <a name="label" val="armed"/>
+      <a name="labelloc" val="west"/>
+    </comp>
+    <comp lib="4" loc="(640,140)" name="Counter">
       <a name="appearance" val="logisim_evolution"/>
     </comp>
-    <comp lib="5" loc="(260,220)" name="Button">
-      <a name="label" val="start_count"/>
+    <comp lib="5" loc="(220,200)" name="Button">
+      <a name="label" val="trigger"/>
     </comp>
-    <comp lib="5" loc="(260,270)" name="Button">
-      <a name="label" val="stop_count"/>
-      <a name="press" val="passive"/>
+    <comp lib="5" loc="(220,320)" name="Button">
+      <a name="label" val="reset"/>
     </comp>
-    <comp lib="5" loc="(260,320)" name="Button">
-      <a name="label" val="reset_count"/>
-    </comp>
-    <wire from="(260,170)" to="(440,170)"/>
-    <wire from="(260,220)" to="(300,220)"/>
-    <wire from="(260,270)" to="(320,270)"/>
-    <wire from="(260,320)" to="(300,320)"/>
-    <wire from="(300,320)" to="(300,390)"/>
-    <wire from="(300,390)" to="(590,390)"/>
-    <wire from="(320,270)" to="(320,370)"/>
-    <wire from="(320,370)" to="(440,370)"/>
-    <wire from="(330,220)" to="(360,220)"/>
-    <wire from="(340,260)" to="(340,320)"/>
-    <wire from="(340,260)" to="(360,260)"/>
-    <wire from="(340,320)" to="(360,320)"/>
-    <wire from="(420,240)" to="(440,240)"/>
-    <wire from="(420,300)" to="(440,300)"/>
-    <wire from="(420,340)" to="(440,340)"/>
-    <wire from="(440,170)" to="(440,200)"/>
-    <wire from="(440,200)" to="(460,200)"/>
-    <wire from="(440,240)" to="(440,300)"/>
-    <wire from="(440,240)" to="(460,240)"/>
-    <wire from="(440,340)" to="(440,370)"/>
-    <wire from="(510,220)" to="(650,220)"/>
-    <wire from="(590,160)" to="(590,390)"/>
-    <wire from="(590,160)" to="(650,160)"/>
+    <wire from="(220,140)" to="(510,140)"/>
+    <wire from="(220,200)" to="(300,200)"/>
+    <wire from="(220,260)" to="(300,260)"/>
+    <wire from="(220,320)" to="(270,320)"/>
+    <wire from="(270,320)" to="(270,400)"/>
+    <wire from="(270,400)" to="(610,400)"/>
+    <wire from="(300,260)" to="(300,370)"/>
+    <wire from="(300,260)" to="(440,260)"/>
+    <wire from="(300,370)" to="(430,370)"/>
+    <wire from="(330,200)" to="(360,200)"/>
+    <wire from="(330,240)" to="(330,320)"/>
+    <wire from="(330,240)" to="(360,240)"/>
+    <wire from="(330,320)" to="(350,320)"/>
+    <wire from="(410,300)" to="(510,300)"/>
+    <wire from="(410,340)" to="(430,340)"/>
+    <wire from="(420,220)" to="(440,220)"/>
+    <wire from="(430,340)" to="(430,370)"/>
+    <wire from="(490,240)" to="(510,240)"/>
+    <wire from="(510,140)" to="(510,200)"/>
+    <wire from="(510,200)" to="(530,200)"/>
+    <wire from="(510,240)" to="(510,300)"/>
+    <wire from="(510,240)" to="(530,240)"/>
+    <wire from="(580,220)" to="(640,220)"/>
+    <wire from="(610,160)" to="(610,400)"/>
+    <wire from="(610,160)" to="(640,160)"/>
   </circuit>
 </project>
