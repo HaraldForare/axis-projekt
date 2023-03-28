@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project source="3.7.2" version="1.0">
-  This file is intended to be loaded by Logisim-evolution v3.7.2(https://github.com/logisim-evolution/).
+<project source="3.8.0" version="1.0">
+  This file is intended to be loaded by Logisim-evolution v3.8.0(https://github.com/logisim-evolution/).
 
   <lib desc="#Wiring" name="0">
     <tool name="Pin">
@@ -56,9 +56,65 @@
     <a name="circuit" val="main"/>
     <a name="circuitnamedboxfixedsize" val="true"/>
     <a name="simulationFrequency" val="8.0"/>
+    <comp lib="0" loc="(200,1010)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="clk_B"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(200,1040)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="clk_A"/>
+      <a name="output" val="true"/>
+    </comp>
     <comp lib="0" loc="(200,260)" name="Constant"/>
+    <comp lib="0" loc="(200,480)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="trigger_C"/>
+    </comp>
+    <comp lib="0" loc="(200,510)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="trigger_B"/>
+    </comp>
+    <comp lib="0" loc="(200,540)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="trigger_A"/>
+    </comp>
+    <comp lib="0" loc="(200,580)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="armed_C"/>
+    </comp>
+    <comp lib="0" loc="(200,610)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="armed_B"/>
+    </comp>
+    <comp lib="0" loc="(200,640)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="armed_A"/>
+    </comp>
+    <comp lib="0" loc="(200,680)" name="Clock"/>
+    <comp lib="0" loc="(200,880)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="triggered_C"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(200,910)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="triggered_B"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(200,940)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="triggered_A"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(200,980)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="clk_C"/>
+      <a name="output" val="true"/>
+    </comp>
     <comp lib="0" loc="(220,140)" name="Clock"/>
     <comp lib="0" loc="(300,260)" name="Pull Resistor"/>
+    <comp lib="1" loc="(260,540)" name="NOT Gate"/>
     <comp lib="1" loc="(330,200)" name="NOT Gate"/>
     <comp lib="1" loc="(350,320)" name="NAND Gate">
       <a name="facing" val="west"/>
@@ -79,12 +135,26 @@
     <comp lib="5" loc="(220,320)" name="Button">
       <a name="label" val="reset"/>
     </comp>
+    <comp lib="6" loc="(310,900)" name="7408"/>
+    <comp lib="6" loc="(490,900)" name="7408"/>
+    <comp lib="6" loc="(690,900)" name="7400"/>
+    <comp lib="6" loc="(910,900)" name="7400"/>
+    <wire from="(200,1040)" to="(280,1040)"/>
+    <wire from="(200,540)" to="(230,540)"/>
+    <wire from="(200,640)" to="(520,640)"/>
+    <wire from="(200,680)" to="(340,680)"/>
+    <wire from="(200,940)" to="(250,940)"/>
     <wire from="(220,140)" to="(510,140)"/>
     <wire from="(220,200)" to="(300,200)"/>
     <wire from="(220,260)" to="(300,260)"/>
     <wire from="(220,320)" to="(270,320)"/>
+    <wire from="(250,810)" to="(250,940)"/>
+    <wire from="(250,810)" to="(360,810)"/>
+    <wire from="(260,540)" to="(720,540)"/>
     <wire from="(270,320)" to="(270,400)"/>
     <wire from="(270,400)" to="(610,400)"/>
+    <wire from="(280,840)" to="(280,1040)"/>
+    <wire from="(280,840)" to="(380,840)"/>
     <wire from="(300,260)" to="(300,370)"/>
     <wire from="(300,260)" to="(440,260)"/>
     <wire from="(300,370)" to="(430,370)"/>
@@ -92,6 +162,10 @@
     <wire from="(330,240)" to="(330,320)"/>
     <wire from="(330,240)" to="(360,240)"/>
     <wire from="(330,320)" to="(350,320)"/>
+    <wire from="(340,680)" to="(340,870)"/>
+    <wire from="(360,810)" to="(360,870)"/>
+    <wire from="(360,810)" to="(560,810)"/>
+    <wire from="(380,840)" to="(380,870)"/>
     <wire from="(410,300)" to="(510,300)"/>
     <wire from="(410,340)" to="(430,340)"/>
     <wire from="(420,220)" to="(440,220)"/>
@@ -101,8 +175,21 @@
     <wire from="(510,200)" to="(530,200)"/>
     <wire from="(510,240)" to="(510,300)"/>
     <wire from="(510,240)" to="(530,240)"/>
+    <wire from="(520,640)" to="(520,870)"/>
+    <wire from="(520,640)" to="(960,640)"/>
+    <wire from="(540,840)" to="(540,870)"/>
+    <wire from="(540,840)" to="(760,840)"/>
+    <wire from="(560,810)" to="(560,870)"/>
     <wire from="(580,220)" to="(640,220)"/>
     <wire from="(610,160)" to="(610,400)"/>
     <wire from="(610,160)" to="(640,160)"/>
+    <wire from="(720,540)" to="(720,870)"/>
+    <wire from="(740,810)" to="(740,870)"/>
+    <wire from="(740,810)" to="(980,810)"/>
+    <wire from="(760,840)" to="(760,870)"/>
+    <wire from="(760,840)" to="(940,840)"/>
+    <wire from="(940,840)" to="(940,870)"/>
+    <wire from="(960,640)" to="(960,870)"/>
+    <wire from="(980,810)" to="(980,870)"/>
   </circuit>
 </project>
