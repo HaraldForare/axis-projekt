@@ -112,7 +112,6 @@ void read_counters() {
 
     // Save counter states to their internal registers (freeze count)
     digitalWrite(PIN_SAVE_COUNTERS, HIGH);
-    digitalWrite(PIN_SAVE_COUNTERS, LOW);
 
 
     // Start reading data
@@ -128,22 +127,23 @@ void read_counters() {
 
     digitalWrite(PIN_COUNTERS_GBL, LOW);
     uint16_t counter_A1_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    uint16_t counter_B1_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
     digitalWrite(PIN_COUNTERS_GBL, HIGH);
 
     digitalWrite(PIN_COUNTERS_GBU, LOW);
     uint16_t counter_A1_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    uint16_t counter_B1_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
     digitalWrite(PIN_COUNTERS_GBU, HIGH);
 
 
-    Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_upper_byte); Serial.print("\n");
+    Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_lower_byte); Serial.print("\n");
 
 
     uint16_t count_A0 = (counter_A0_upper_byte << 8) | counter_A0_lower_byte;
     uint16_t count_A1 = (counter_A1_upper_byte << 8) | counter_A1_lower_byte;
     uint16_t count_B0 = (counter_B0_upper_byte << 8) | counter_B0_lower_byte;
-    uint16_t count_B1 = (counter_B1_upper_byte << 8) | counter_B1_lower_byte;
+
+
+
+    digitalWrite(PIN_SAVE_COUNTERS, LOW);
 
 
     Serial.print("Counts:\n    A0: ");
@@ -152,8 +152,6 @@ void read_counters() {
     Serial.print(count_A1);
     Serial.print("\n    B0: ");
     Serial.print(count_B0);
-    Serial.print("\n    B1: ");
-    Serial.print(count_B1);
     Serial.print("\n\n");
 
     /*
@@ -295,10 +293,10 @@ void loop() {
     //DEBUG_print_io();
 
     read_counters();
-    DEBUG_pulse_clock_source(1);
+    DEBUG_pulse_clock_source(10);
 
 
-    delay(1000);
+    delay(100);
 
     /*
     
