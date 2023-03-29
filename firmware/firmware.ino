@@ -205,9 +205,9 @@ void DEBUG_print_io() {
     Serial.print("Counting trigger\n    A0: ");
     DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A0));
     Serial.print("\n    A1: ");
-    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A0));
+    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A1));
     Serial.print("\n    B0: ");
-    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A0));
+    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_B0));
     Serial.print("\n\n");
 
 
