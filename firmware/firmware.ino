@@ -16,6 +16,7 @@
 
 #define PIN_CLEAR_TIMERS 4
 
+#define PIN_CLK_OUTPUT 10
 
 
 
@@ -40,8 +41,47 @@ uint8_t read_8_consecutive_pins_to_byte(uint8_t first_pin) {
 
 
 void setup_timer_clock_source() {
-    // TODO
-    // Configure a PWM pin to output raw clock source (look in UC datasheet)
+    /*
+        We are using timer/counter 2.
+
+        It is an 8-bit timer.
+
+
+    
+
+    */
+
+    // Set timer to known state
+    TCCR2A = 0;	TCCR2B = 0;	TCNT2 = 0;
+
+
+    /*
+    // Enable Fast PWM with OCR2A as top
+    TCCR2A |= (1 <<  WGM21) | (1 <<  WGM20);
+    TCCR2B |= (1 << WGM22);
+    */
+
+    // Enable CTC mode
+    TCCR2A |= (1 << WGM21);
+
+
+    // Enable pin toggle on max value
+    TCCR2A |= (1 << COM2A0);
+
+
+    // Output compare register at which the timer is reset and pin is toggled
+    OCR2A = 0;
+    OCR2A = 0xFF;  // Slower during development
+
+    // Set proper pin to output
+    pinMode(PIN_CLK_OUTPUT, OUTPUT);
+
+
+    // Start timer with prescaler = 1
+    TCCR2B |= 0b00000001;
+    //TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20);  // Put prescaler = 1024 for debugging
+
+
 }
 
 
@@ -61,6 +101,7 @@ void setup() {
     set_8_consecutive_pins_to_input(PIN_TIMER_B_DATA_BUS_START);
 
 
+    setup_timer_clock_source();
 
     pinMode(PIN_CLEAR_TIMERS, OUTPUT);
     clear_timers();
