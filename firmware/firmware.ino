@@ -94,76 +94,61 @@ void clear_counters() {
 }
 
 
-/*
-struct Counters {
+
+class ReadCounters {
+public:
     uint16_t count_A0;
     uint16_t count_A1;
     uint16_t count_B0;
-    uint16_t count_B1;
 
-    constructor() {
+    ReadCounters() {
 
+        // Save counter states to their internal registers (freeze count)
+        digitalWrite(PIN_SAVE_COUNTERS, HIGH);
+
+
+        // Start reading data
+        digitalWrite(PIN_COUNTERS_GAL, LOW);
+        uint16_t counter_A0_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
+        uint16_t counter_B0_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
+        digitalWrite(PIN_COUNTERS_GAL, HIGH);
+
+        digitalWrite(PIN_COUNTERS_GAU, LOW);
+        uint16_t counter_A0_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
+        uint16_t counter_B0_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
+        digitalWrite(PIN_COUNTERS_GAU, HIGH);
+
+        digitalWrite(PIN_COUNTERS_GBL, LOW);
+        uint16_t counter_A1_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
+        digitalWrite(PIN_COUNTERS_GBL, HIGH);
+
+        digitalWrite(PIN_COUNTERS_GBU, LOW);
+        uint16_t counter_A1_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
+        digitalWrite(PIN_COUNTERS_GBU, HIGH);
+
+
+        Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_lower_byte); Serial.print("\n");
+
+
+        this->count_A0 = (counter_A0_upper_byte << 8) | counter_A0_lower_byte;
+        this->count_A1 = (counter_A1_upper_byte << 8) | counter_A1_lower_byte;
+        this->count_B0 = (counter_B0_upper_byte << 8) | counter_B0_lower_byte;
+
+        digitalWrite(PIN_SAVE_COUNTERS, LOW);
+    }
+
+    void DEBUG_print() {
+        Serial.print("Counts:\n    A0: ");
+        Serial.print(this->count_A0);
+        Serial.print("\n    A1: ");
+        Serial.print(this->count_A1);
+        Serial.print("\n    B0: ");
+        Serial.print(this->count_B0);
+        Serial.print("\n");
     }
 };
-*/
 
 
-void read_counters() {
-
-    // Save counter states to their internal registers (freeze count)
-    digitalWrite(PIN_SAVE_COUNTERS, HIGH);
-
-
-    // Start reading data
-    digitalWrite(PIN_COUNTERS_GAL, LOW);
-    uint16_t counter_A0_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    uint16_t counter_B0_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
-    digitalWrite(PIN_COUNTERS_GAL, HIGH);
-
-    digitalWrite(PIN_COUNTERS_GAU, LOW);
-    uint16_t counter_A0_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    uint16_t counter_B0_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START);
-    digitalWrite(PIN_COUNTERS_GAU, HIGH);
-
-    digitalWrite(PIN_COUNTERS_GBL, LOW);
-    uint16_t counter_A1_lower_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    digitalWrite(PIN_COUNTERS_GBL, HIGH);
-
-    digitalWrite(PIN_COUNTERS_GBU, LOW);
-    uint16_t counter_A1_upper_byte = read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START);
-    digitalWrite(PIN_COUNTERS_GBU, HIGH);
-
-
-    Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_lower_byte); Serial.print("\n");
-
-
-    uint16_t count_A0 = (counter_A0_upper_byte << 8) | counter_A0_lower_byte;
-    uint16_t count_A1 = (counter_A1_upper_byte << 8) | counter_A1_lower_byte;
-    uint16_t count_B0 = (counter_B0_upper_byte << 8) | counter_B0_lower_byte;
-
-
-
-    digitalWrite(PIN_SAVE_COUNTERS, LOW);
-
-
-    Serial.print("Counts:\n    A0: ");
-    Serial.print(count_A0);
-    Serial.print("\n    A1: ");
-    Serial.print(count_A1);
-    Serial.print("\n    B0: ");
-    Serial.print(count_B0);
-    Serial.print("\n\n");
-
-    /*
-    Counters counters;
-    counters.
-    counters.count_A1 = (counter_A1_upper_byte << 8) | counter_A1_lower_byte;
-    counters.count_B0 = (counter_B0_upper_byte << 8) | counter_B0_lower_byte;
-    counters.count_B1 = (counter_B1_upper_byte << 8) | counter_B1_lower_byte;
-
-    return counters;
-    */
-}
 
 
 void DEBUG_print_bit(uint8_t bit) {
@@ -239,7 +224,6 @@ void setup() {
 
     set_n_consecutive_pins_to_input(8, PIN_COUNTER_A_DATA_BUS_START);
     set_n_consecutive_pins_to_input(8, PIN_COUNTER_B_DATA_BUS_START);
-    
 
 
     digitalWrite(PIN_COUNTERS_GAL, HIGH);
@@ -253,17 +237,13 @@ void setup() {
     pinMode(PIN_COUNTERS_GBU, OUTPUT);
 
 
-
     pinMode(DEBUG_PIN_TRIGGER_A0, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_A1, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_B0, OUTPUT);
 
 
-
-
     //setup_counter_clock_source();
     pinMode(PIN_CLK_OUTPUT, OUTPUT);
-
 
     pinMode(PIN_ARM_COUNTERS, OUTPUT);
     digitalWrite(PIN_ARM_COUNTERS, LOW);
@@ -274,11 +254,11 @@ void setup() {
     pinMode(PIN_SAVE_COUNTERS, OUTPUT);
     digitalWrite(PIN_SAVE_COUNTERS, LOW);
 
-    read_counters();
 
+    ReadCounters read_counters();  // Initialize counters properly
+    //read_counters.DEBUG_print();
 
     digitalWrite(PIN_ARM_COUNTERS, HIGH);
-
 
     Serial.println("Setup finished");
 }
@@ -289,32 +269,24 @@ void setup() {
 
 void loop() {
 
+    ReadCounters read_counters = ReadCounters();
+    read_counters.DEBUG_print();
 
-    //DEBUG_print_io();
 
-    read_counters();
     DEBUG_pulse_clock_source(10);
 
 
     delay(100);
-
     /*
-    
-    * Reset counters
-    * Sound peaks will cause the respective counters to start counting
-    * Microcontroller will monitor the internal latch states and determine
-      if triggering was a fluke or if it actually was a real event.
+        * Reset counters
+        * Sound peaks will cause the respective counters to start counting
+        * Microcontroller will monitor the internal latch states and determine
+        if triggering was a fluke or if it actually was a real event.
 
-    * Providing it was a real event. The microcontroller will stop all counters
-      at the same time. Timers are stopped by turning off their clock source
+        * Providing it was a real event. The microcontroller will stop all counters
+        at the same time. Timers are stopped by turning off their clock source
 
-    * Timers are read
-
-
-
-    * 
-
-    
+        * Timers are read
     */
 
 
