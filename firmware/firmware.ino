@@ -94,6 +94,23 @@ void clear_counters() {
 }
 
 
+uint8_t get_counters_trigger_state() {
+    uint8_t output = 0;
+    if (digitalRead(PIN_COUNTER_A0_TRIGGERED)) {
+        output &= 0b00000001;
+    }
+
+    if (digitalRead(PIN_COUNTER_A1_TRIGGERED)) {
+        output &= 0b00000010;
+    }
+
+    if (digitalRead(PIN_COUNTER_B0_TRIGGERED)) {
+        output &= 0b00000100;
+    }
+
+    return output;
+}
+
 
 class ReadCounters {
 public:
