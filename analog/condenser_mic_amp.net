@@ -1,0 +1,24 @@
+* C:\users\abbekasagas\Desktop\repos\axis-projekt\analog\condenser_mic_amp.asc
+R1 N002 N007 5k
+R2 N007 0 5k
+R3 N007 N007 10k
+C1 N008 N007 100µ
+XU1 N008 N004 N002 0 N005 level1 Avol=1Meg GBW=10Meg Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
+R4 N005 N004 2k
+R5 0 N004 1k
+R6 N008 N004 1000k
+V1 N002 0 9
+V2 N007 P001 SINE(0 0.1 2000 0 0 0 0.5)
+C2 N006 N005 100µ
+R7 N006 N003 100k
+C3 P001 0 10µ
+XU3 N006 N003 N001 0 trigg level2 Avol=1Meg GBW=10Meg Slew=10Meg Ilimit=25m Rail=0 Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
+R8 N001 N003 10k
+R9 N003 0 10k
+V3 N001 0 5
+R10 N006 0 2000k
+.tran 0 0.01 0
+.lib UniversalOpAmp1.lib
+.lib UniversalOpAmp2.lib
+.backanno
+.end
