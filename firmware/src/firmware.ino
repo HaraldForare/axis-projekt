@@ -292,7 +292,6 @@ void setup()
 
 void loop()
 {
-    delay(3000);
     // TODO: Reset counters and re-arm
 
     // Wait for any counter to become active
@@ -329,8 +328,8 @@ void loop()
 
     // ONLY FOR DEBUG!!!!
     double arrival_times[3] = {
-        10160.0,
         0.0,
+        10160.0,
         10160.0};
 
     {
@@ -421,4 +420,5 @@ void loop()
     Serial.println(angle + PI);
 
     delay(ECHO_DISSIPATION_COOLDOWN_MILLIS);
+    delay(10000);
 }

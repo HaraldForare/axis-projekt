@@ -1,15 +1,21 @@
+use dotenv::dotenv;
 use serialport;
 use std::{
-    io::{self, BufRead, BufReader},
+    io::{BufRead, BufReader},
     str,
     time::Duration,
 };
 
+use crate::util::camera;
+
+mod util;
 fn main() {
+    dotenv().ok();
     const BAUD_RATE: u32 = 115200;
     let ports = serialport::available_ports().expect("No ports!");
     let mut found = false;
     let mut port = None;
+    let camera = camera::Camera::new();
 
     for p in ports {
         println!("{}", p.port_name);
@@ -35,7 +41,7 @@ fn main() {
             let mut buf = String::new();
             match reader.read_line(&mut buf) {
                 Ok(_t) => {
-                    test(buf.as_bytes());
+                    camera.pan(parse_angle(buf.as_bytes()));
                 }
                 Err(ref e) if e.kind() == std::io::ErrorKind::TimedOut => (),
                 Err(e) => eprintln!("{:?}", e),
@@ -44,13 +50,14 @@ fn main() {
     }
 }
 
-fn test(buf: &[u8]) {
+fn parse_angle(buf: &[u8]) -> i16 {
     let binding = buf.to_vec();
     let string = str::from_utf8(&binding)
         .unwrap_or("0")
         .trim_matches(|c| c == '\r' || c == '\n');
     println!("string: {}", &string);
-    let angle = string.parse().unwrap_or(0.0_f32).to_degrees().round() as i32;
+    let angle = string.parse().unwrap_or(0.0_f32).to_degrees().round() as i16;
     std::thread::sleep(std::time::Duration::from_millis(100));
     println!("angle: {} \n", &angle);
+    angle
 }
