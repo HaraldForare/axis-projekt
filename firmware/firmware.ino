@@ -1,10 +1,17 @@
 
+/*
+#include <BasicLinearAlgebra.h>
+#include <ElementStorage.h>
+using namespace BLA;
+*/
+
 
 
 #define SERIAL_BAUD_RATE 115200
 
 #define STARTUP_POWER_STABILIZATION_DELAY_MILLIS 200
 
+#define PI 3.141592653589793238462643383279502884
 
 #define PIN_COUNTER_A_DATA_BUS_START 22
 #define PIN_COUNTER_B_DATA_BUS_START 34
@@ -30,6 +37,15 @@
 #define DEBUG_PIN_TRIGGER_A0 50
 #define DEBUG_PIN_TRIGGER_A1 51
 #define DEBUG_PIN_TRIGGER_B0 52
+
+
+
+
+// Set this to the time it takes for sound to pass through all microphones (t = s / v)
+// Max distance between two microphones
+// Exact value will be acquired from CAD (+ a small safety margin)
+#define FLUKE_SIGNAL_REJECTION_TIME_MICROS 800
+#define ECHO_DISSIPATION_COOLDOWN_MILLIS 200
 
 
 
@@ -286,27 +302,121 @@ void setup() {
 
 void loop() {
 
+    // TODO: Reset counters and re-arm
+
+
+    // Wait for any counter to become active
+    if (!get_counters_trigger_state()) {
+        return;
+    }
+
+
+    uint64_t trigger_time = micros();
+
+    Serial.println("First pulse detected!");
+
+    while (true) {
+        if (micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) {
+            Serial.println("Timed out while waiting for the other two pulses");
+            return;
+        }
+
+        if (get_counters_trigger_state() & 0b00000111) {
+            Serial.println("Got three pulses!");
+            break;
+        }
+    }
+
+
+
+
     ReadCounters read_counters = ReadCounters();
     read_counters.DEBUG_print();
 
 
-    DEBUG_pulse_clock_source(10);
+
+    double arrival_times[3] = {
+        (double)read_counters.count_A0,
+        (double)read_counters.count_A1,
+        (double)read_counters.count_B0
+    };
 
 
-    delay(100);
-    /*
-        * Reset counters
-        * Sound peaks will cause the respective counters to start counting
-        * Microcontroller will monitor the internal latch states and determine
-        if triggering was a fluke or if it actually was a real event.
+    {
+        double mean_arrival_time = 0.0;
+        for (uint8_t n = 0; n < 3; n += 1) {
+            mean_arrival_time += arrival_times[n];
+        }
 
-        * Providing it was a real event. The microcontroller will stop all counters
-        at the same time. Timers are stopped by turning off their clock source
+        mean_arrival_time /= 3.0;
+        
+        for (uint8_t n = 0; n < 3; n += 1) {
+            arrival_times[n] -= mean_arrival_time;
+        }
+    }
 
-        * Timers are read
-    */
+
+    // Make sure atleast one arrival time is different, otherwise we get divide by zero and shouldn't continue
+    {
+        double max_difference = 0.0;
+        for (uint8_t n = 0; n < 3; n += 1) {
+            for (uint8_t k = 0; k < 3; k += 1) {
+                if (n != k) {
+                    double difference = abs(arrival_times[n] - arrival_times[k]);
+                    if (difference > max_difference) {
+                        max_difference = difference;
+                    }
+                }
+            }
+        }
+
+        if (max_difference <= 0.0) {
+            Serial.print("Max difference between numbers was only ");
+            Serial.print(max_difference);
+            Serial.print(", which is too small. Aborting here to avoid divide by zero");
+            return;
+        }
+    }
 
 
+    double mic_vectors[3][2];
+    for (uint8_t n = 0; n < 3; n += 1) {
+        double angle = ((double)n) * 2.0 / 3.0 * PI;
+        mic_vectors[n][0] = cos(angle);
+        mic_vectors[n][1] = sin(angle);
+    }
 
+
+    double projections[3][2];
+    for (uint8_t n = 0; n < 3; n += 1) {
+        for (uint8_t k = 0; n < 2; n += 1) {
+            projections[n][k] = arrival_times[n][k] * mic_vectors[n][k];
+        }
+    }    
+
+
+    double source_direction[2] = {0.0, 0.0};
+    for (uint8_t n = 0; n < 3; n += 1) {
+        for (uint8_t k = 0; k < 2; k += 1) {
+            source_direction[k] += projections[n][k];
+        }
+    }
+
+
+    {
+        double norm = sqrt(sq(source_direction[0]) + sq(source_direction[1]));
+        source_direction[0] /= norm;
+        source_direction[1] /= norm;
+    }
+
+
+    Serial.print("Sound from: {x: ");
+    Serial.print(source_direction[0]);
+    Serial.print(", y: ");
+    Serial.print(source_direction[1]);
+    Serial.print("}\n");
+
+
+    delay(ECHO_DISSIPATION_COOLDOWN_MILLIS);
 }
 
