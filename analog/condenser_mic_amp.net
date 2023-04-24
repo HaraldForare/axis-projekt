@@ -1,24 +1,22 @@
 * C:\users\abbekasagas\Desktop\repos\axis-projekt\analog\condenser_mic_amp.asc
-R1 N002 N007 5k
-R2 N007 0 5k
-R3 N007 N007 10k
-C1 N008 N007 100µ
-XU1 N008 N004 N002 0 N005 level1 Avol=1Meg GBW=10Meg Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
-R4 N005 N004 2k
-R5 0 N004 1k
-R6 N008 N004 1000k
-V1 N002 0 9
-V2 N007 P001 SINE(0 0.1 2000 0 0 0 0.5)
-C2 N006 N005 100µ
-R7 N006 N003 100k
-C3 P001 0 10µ
-XU3 N006 N003 N001 0 trigg level2 Avol=1Meg GBW=10Meg Slew=10Meg Ilimit=25m Rail=0 Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
-R8 N001 N003 10k
-R9 N003 0 10k
-V3 N001 0 5
-R10 N006 0 2000k
-.tran 0 0.01 0
-.lib UniversalOpAmp1.lib
+C1 N009 N008 1µ
+R4 N006 N005 2k
+R5 0 N005 1k
+C2 N007 N006 100µ
+R7 N007 N004 100k
+XU3 N007 N004 N002 0 trigg level2 Avol=1Meg GBW=10Meg Slew=10Meg Ilimit=25m Rail=0 Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
+R8 N002 N004 10k
+R9 N004 0 10k
+R10 N007 0 2000k
+XU1 N009 N005 N001 N010 N006 level2 Avol=1Meg GBW=10Meg Slew=10Meg Ilimit=25m Rail=0 Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
+V5 N001 0 9
+V6 0 N010 9
+R1 N008 0 2200
+I1 N010 N008 SINE(0 0.0001 2000 0 0 0 0.5)
+XU2 N003 N002 N001 0 N002 level2 Avol=1Meg GBW=10Meg Slew=10Meg Ilimit=25m Rail=0 Vos=0 En=0 Enk=0 In=0 Ink=0 Rin=500Meg
+R2 N003 0 50k
+R3 N001 N003 40k
+.tran 0.01
 .lib UniversalOpAmp2.lib
 .backanno
 .end
