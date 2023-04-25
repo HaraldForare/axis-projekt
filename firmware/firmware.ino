@@ -378,7 +378,7 @@ void loop() {
     //Serial.println("First pulse detected!");
 
     while (true) {
-        if (micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) {
+        if ((micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) || (micros() < trigger_time)) {
             if (DEBUG_PRINTOUT) {
                 Serial.println("Timed out while waiting for the other two pulses");
             }
