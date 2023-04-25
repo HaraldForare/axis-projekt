@@ -7,6 +7,9 @@ using namespace BLA;
 
 
 
+#define DEBUG_PRINTOUT false
+
+
 #define SERIAL_BAUD_RATE 115200
 
 #define STARTUP_POWER_STABILIZATION_DELAY_MILLIS 200
@@ -44,8 +47,8 @@ using namespace BLA;
 // Set this to the time it takes for sound to pass through all microphones (t = s / v)
 // Max distance between two microphones
 // Exact value will be acquired from CAD (+ a small safety margin)
-#define FLUKE_SIGNAL_REJECTION_TIME_MICROS 800
-#define ECHO_DISSIPATION_COOLDOWN_MILLIS 200
+#define FLUKE_SIGNAL_REJECTION_TIME_MICROS 5000  //800
+#define ECHO_DISSIPATION_COOLDOWN_MILLIS 500
 
 
 
@@ -89,7 +92,7 @@ void setup_counter_clock_source() {
 
     // Output compare register at which the counter is reset and pin is toggled
     OCR2A = 0;
-    OCR2A = 0xFF;  // Slower during development
+    //OCR2A = 0xFF;  // Slower during development
 
     // Start counter with prescaler = 1
     TCCR2B |= 0b00000001;
@@ -113,18 +116,42 @@ void clear_counters() {
 uint8_t get_counters_trigger_state() {
     uint8_t output = 0;
     if (digitalRead(PIN_COUNTER_A0_TRIGGERED)) {
-        output &= 0b00000001;
+        output |= 0b00000001;
     }
 
     if (digitalRead(PIN_COUNTER_A1_TRIGGERED)) {
-        output &= 0b00000010;
+        output |= 0b00000010;
     }
 
     if (digitalRead(PIN_COUNTER_B0_TRIGGERED)) {
-        output &= 0b00000100;
+        output |= 0b00000100;
+    }
+
+    if (DEBUG_PRINTOUT) {
+        Serial.print("Counters trigger state: ");
+        DEBUG_print_byte(output);
+        Serial.print("\n");
     }
 
     return output;
+}
+
+
+void reset_counters_and_re_arm() {
+
+    // Disarm circuit
+    digitalWrite(PIN_ARM_COUNTERS, LOW);
+
+    // Clear counters
+    digitalWrite(PIN_CLEAR_COUNTERS, LOW);
+    digitalWrite(PIN_CLEAR_COUNTERS, HIGH);
+
+    // Transfer data (0) from counters to internal storage registers
+    digitalWrite(PIN_SAVE_COUNTERS, HIGH);
+    digitalWrite(PIN_SAVE_COUNTERS, LOW);
+
+    // Arm circuit again
+    digitalWrite(PIN_ARM_COUNTERS, HIGH);
 }
 
 
@@ -160,7 +187,7 @@ public:
         digitalWrite(PIN_COUNTERS_GBU, HIGH);
 
 
-        Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_lower_byte); Serial.print("\n");
+        //Serial.print("A0: "); DEBUG_print_byte(counter_A0_upper_byte); DEBUG_print_byte(counter_A0_lower_byte); Serial.print("\n");
 
 
         this->count_A0 = (counter_A0_upper_byte << 8) | counter_A0_lower_byte;
@@ -171,13 +198,15 @@ public:
     }
 
     void DEBUG_print() {
-        Serial.print("Counts:\n    A0: ");
-        Serial.print(this->count_A0);
-        Serial.print("\n    A1: ");
-        Serial.print(this->count_A1);
-        Serial.print("\n    B0: ");
-        Serial.print(this->count_B0);
-        Serial.print("\n");
+        if (DEBUG_PRINTOUT) {
+            Serial.print("Counts:\n    A0: ");
+            Serial.print(this->count_A0);
+            Serial.print("\n    A1: ");
+            Serial.print(this->count_A1);
+            Serial.print("\n    B0: ");
+            Serial.print(this->count_B0);
+            Serial.print("\n");
+        }
     }
 };
 
@@ -185,8 +214,10 @@ public:
 
 
 void DEBUG_print_bit(uint8_t bit) {
-    if (bit) {Serial.print("1");}
-    else     {Serial.print("0");}
+    if (DEBUG_PRINTOUT) {
+        if (bit) {Serial.print("1");}
+        else     {Serial.print("0");}
+    }
 }
 
 
@@ -198,55 +229,56 @@ void DEBUG_print_byte(uint8_t byte) {
 
 
 void DEBUG_print_io() {
-
-    Serial.println("======[ DEBUG IO ]======");
-    
-    Serial.print("Counter data buses\n    A: ");
-    DEBUG_print_byte(read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START));
-    Serial.print("\n    B: ");
-    DEBUG_print_byte(read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START));
-    Serial.print("\n\n");
-
-
-
-    Serial.print("Counting triggered\n    A0: ");
-    DEBUG_print_bit(digitalRead(PIN_COUNTER_A0_TRIGGERED));
-    Serial.print("\n    A1: ");
-    DEBUG_print_bit(digitalRead(PIN_COUNTER_A1_TRIGGERED));
-    Serial.print("\n    B0: ");
-    DEBUG_print_bit(digitalRead(PIN_COUNTER_B0_TRIGGERED));
-    Serial.print("\n\n");
+    if (DEBUG_PRINTOUT) {
+        Serial.println("======[ DEBUG IO ]======");
+        
+        Serial.print("Counter data buses\n    A: ");
+        DEBUG_print_byte(read_8_consecutive_pins_to_byte(PIN_COUNTER_A_DATA_BUS_START));
+        Serial.print("\n    B: ");
+        DEBUG_print_byte(read_8_consecutive_pins_to_byte(PIN_COUNTER_B_DATA_BUS_START));
+        Serial.print("\n\n");
 
 
 
-
-    Serial.print("Counting trigger\n    A0: ");
-    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A0));
-    Serial.print("\n    A1: ");
-    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A1));
-    Serial.print("\n    B0: ");
-    DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_B0));
-    Serial.print("\n\n");
-
-
-
-    Serial.print("Counter control\n    CLEAR: ");
-    DEBUG_print_bit(digitalRead(PIN_CLEAR_COUNTERS));
-    Serial.print("\n    ARM:   ");
-    DEBUG_print_bit(digitalRead(PIN_ARM_COUNTERS));
-    Serial.print("\n    SAVE:  ");
-    DEBUG_print_bit(digitalRead(PIN_SAVE_COUNTERS));
-    Serial.print("\n\n");
+        Serial.print("Counting triggered\n    A0: ");
+        DEBUG_print_bit(digitalRead(PIN_COUNTER_A0_TRIGGERED));
+        Serial.print("\n    A1: ");
+        DEBUG_print_bit(digitalRead(PIN_COUNTER_A1_TRIGGERED));
+        Serial.print("\n    B0: ");
+        DEBUG_print_bit(digitalRead(PIN_COUNTER_B0_TRIGGERED));
+        Serial.print("\n\n");
 
 
 
 
-    Serial.print("Clock\n    SOURCE: ");
-    DEBUG_print_bit(digitalRead(PIN_CLK_OUTPUT));
-    Serial.print("\n\n");
+        Serial.print("Counting trigger\n    A0: ");
+        DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A0));
+        Serial.print("\n    A1: ");
+        DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_A1));
+        Serial.print("\n    B0: ");
+        DEBUG_print_bit(digitalRead(DEBUG_PIN_TRIGGER_B0));
+        Serial.print("\n\n");
 
 
-    Serial.print("========================\n\n");
+
+        Serial.print("Counter control\n    CLEAR: ");
+        DEBUG_print_bit(digitalRead(PIN_CLEAR_COUNTERS));
+        Serial.print("\n    ARM:   ");
+        DEBUG_print_bit(digitalRead(PIN_ARM_COUNTERS));
+        Serial.print("\n    SAVE:  ");
+        DEBUG_print_bit(digitalRead(PIN_SAVE_COUNTERS));
+        Serial.print("\n\n");
+
+
+
+
+        Serial.print("Clock\n    SOURCE: ");
+        DEBUG_print_bit(digitalRead(PIN_CLK_OUTPUT));
+        Serial.print("\n\n");
+
+
+        Serial.print("========================\n\n");
+    }
 }
 
 
@@ -273,9 +305,12 @@ void setup() {
     pinMode(DEBUG_PIN_TRIGGER_A0, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_A1, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_B0, OUTPUT);
+    digitalWrite(DEBUG_PIN_TRIGGER_A0, HIGH);
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, HIGH);
+    digitalWrite(DEBUG_PIN_TRIGGER_B0, HIGH);
 
 
-    //setup_counter_clock_source();
+    setup_counter_clock_source();
     pinMode(PIN_CLK_OUTPUT, OUTPUT);
 
     pinMode(PIN_ARM_COUNTERS, OUTPUT);
@@ -293,45 +328,83 @@ void setup() {
 
     digitalWrite(PIN_ARM_COUNTERS, HIGH);
 
-    Serial.println("Setup finished");
+    if (DEBUG_PRINTOUT) {
+        Serial.println("Setup finished");
+    }
 }
 
 
+
+void DEBUG_simulate_pulse() {
+
+    // Test case: 1.7894593294062686
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, LOW);
+    delayMicroseconds(345);
+    digitalWrite(DEBUG_PIN_TRIGGER_A0, LOW);
+    delayMicroseconds(150);
+    digitalWrite(DEBUG_PIN_TRIGGER_B0, LOW);
+
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, HIGH);
+    digitalWrite(DEBUG_PIN_TRIGGER_A0, HIGH);
+    digitalWrite(DEBUG_PIN_TRIGGER_B0, HIGH);
+}
 
 
 
 void loop() {
 
     // TODO: Reset counters and re-arm
+    reset_counters_and_re_arm();
+
+
+    DEBUG_simulate_pulse();
+
+
+    //Serial.println("Sent simulated pulse");
 
 
     // Wait for any counter to become active
-    if (!get_counters_trigger_state()) {
-        return;
-    }
+    while (!get_counters_trigger_state());  // TODO: Add timeout
+    
+
+
+    //Serial.println("Past loop");
 
 
     uint64_t trigger_time = micros();
 
-    Serial.println("First pulse detected!");
+    uint64_t three_pulses_time = 0;
+
+    //Serial.println("First pulse detected!");
 
     while (true) {
         if (micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) {
-            Serial.println("Timed out while waiting for the other two pulses");
+            if (DEBUG_PRINTOUT) {
+                Serial.println("Timed out while waiting for the other two pulses");
+            }
+
             return;
         }
 
         if (get_counters_trigger_state() & 0b00000111) {
-            Serial.println("Got three pulses!");
+            //Serial.println("Got three pulses!");
+            three_pulses_time = micros();
             break;
         }
     }
 
 
-
-
     ReadCounters read_counters = ReadCounters();
-    read_counters.DEBUG_print();
+
+
+    if (DEBUG_PRINTOUT) {
+        Serial.print("It took "); Serial.print((double)three_pulses_time - (double)trigger_time); Serial.print(" us for three pulses to arrive");
+        read_counters.DEBUG_print();
+    }
+
+
+
+
 
 
 
@@ -371,9 +444,12 @@ void loop() {
         }
 
         if (max_difference <= 0.0) {
-            Serial.print("Max difference between numbers was only ");
-            Serial.print(max_difference);
-            Serial.print(", which is too small. Aborting here to avoid divide by zero");
+            if (DEBUG_PRINTOUT) {
+                Serial.print("Max difference between numbers was only ");
+                Serial.print(max_difference);
+                Serial.print(", which is too small. Aborting here to avoid divide by zero");
+            }
+
             return;
         }
     }
@@ -389,8 +465,8 @@ void loop() {
 
     double projections[3][2];
     for (uint8_t n = 0; n < 3; n += 1) {
-        for (uint8_t k = 0; n < 2; n += 1) {
-            projections[n][k] = arrival_times[n][k] * mic_vectors[n][k];
+        for (uint8_t k = 0; k < 2; k += 1) {
+            projections[n][k] = arrival_times[n] * mic_vectors[n][k];
         }
     }    
 
@@ -410,12 +486,18 @@ void loop() {
     }
 
 
-    Serial.print("Sound from: {x: ");
-    Serial.print(source_direction[0]);
-    Serial.print(", y: ");
-    Serial.print(source_direction[1]);
-    Serial.print("}\n");
+    if (DEBUG_PRINTOUT) {
+        Serial.print("Sound from: {x: ");
+        Serial.print(source_direction[0]);
+        Serial.print(", y: ");
+        Serial.print(source_direction[1]);
+        Serial.print("}\n");
+    }
 
+
+    double angle = atan2(source_direction[1], source_direction[0]);
+
+    Serial.println(angle, 8);
 
     delay(ECHO_DISSIPATION_COOLDOWN_MILLIS);
 }
