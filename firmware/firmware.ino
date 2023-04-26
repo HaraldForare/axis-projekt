@@ -7,7 +7,7 @@ using namespace BLA;
 
 
 
-#define DEBUG_PRINTOUT false
+#define DEBUG_PRINTOUT true
 
 
 #define SERIAL_BAUD_RATE 115200
@@ -399,7 +399,7 @@ void loop() {
 
 
     if (DEBUG_PRINTOUT) {
-        Serial.print("It took "); Serial.print((double)three_pulses_time - (double)trigger_time); Serial.print(" us for three pulses to arrive");
+        Serial.print("It took "); Serial.print((double)three_pulses_time - (double)trigger_time); Serial.println(" us for three pulses to arrive");
         read_counters.DEBUG_print();
     }
 
