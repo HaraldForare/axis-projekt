@@ -305,9 +305,9 @@ void setup() {
     pinMode(DEBUG_PIN_TRIGGER_A0, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_A1, OUTPUT);
     pinMode(DEBUG_PIN_TRIGGER_B0, OUTPUT);
-    digitalWrite(DEBUG_PIN_TRIGGER_A0, HIGH);
-    digitalWrite(DEBUG_PIN_TRIGGER_A1, HIGH);
-    digitalWrite(DEBUG_PIN_TRIGGER_B0, HIGH);
+    digitalWrite(DEBUG_PIN_TRIGGER_A0, LOW);
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, LOW);
+    digitalWrite(DEBUG_PIN_TRIGGER_B0, LOW);
 
 
     setup_counter_clock_source();
@@ -337,16 +337,17 @@ void setup() {
 
 void DEBUG_simulate_pulse() {
 
-    // Test case: 1.7894593294062686
-    digitalWrite(DEBUG_PIN_TRIGGER_A1, LOW);
-    delayMicroseconds(345);
+    // Test case: 0.9909997884498992
+    digitalWrite(DEBUG_PIN_TRIGGER_A0, HIGH);
+    delayMicroseconds(29);
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, HIGH);
+    delayMicroseconds(419);
+    digitalWrite(DEBUG_PIN_TRIGGER_B0, HIGH);
+
     digitalWrite(DEBUG_PIN_TRIGGER_A0, LOW);
-    delayMicroseconds(150);
+    digitalWrite(DEBUG_PIN_TRIGGER_A1, LOW);
     digitalWrite(DEBUG_PIN_TRIGGER_B0, LOW);
 
-    digitalWrite(DEBUG_PIN_TRIGGER_A1, HIGH);
-    digitalWrite(DEBUG_PIN_TRIGGER_A0, HIGH);
-    digitalWrite(DEBUG_PIN_TRIGGER_B0, HIGH);
 }
 
 
