@@ -387,7 +387,7 @@ void loop() {
             return;
         }
 
-        if (get_counters_trigger_state() & 0b00000111) {
+        if (get_counters_trigger_state() == 0b00000111) {
             //Serial.println("Got three pulses!");
             three_pulses_time = micros();
             break;
