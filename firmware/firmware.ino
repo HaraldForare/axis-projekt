@@ -127,11 +127,13 @@ uint8_t get_counters_trigger_state() {
         output |= 0b00000100;
     }
 
+    /*
     if (DEBUG_PRINTOUT) {
         Serial.print("Counters trigger state: ");
         DEBUG_print_byte(output);
         Serial.print("\n");
     }
+    */
 
     return output;
 }
