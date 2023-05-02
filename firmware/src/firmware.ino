@@ -328,9 +328,9 @@ void loop()
 
     // ONLY FOR DEBUG!!!!
     double arrival_times[3] = {
-        0.0,
         10160.0,
-        10160.0};
+        0.0,
+        0.0};
 
     {
         double mean_arrival_time = 0.0;
