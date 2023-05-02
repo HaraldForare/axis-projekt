@@ -358,7 +358,7 @@ void loop() {
     reset_counters_and_re_arm();
 
 
-    DEBUG_simulate_pulse();
+    //DEBUG_simulate_pulse();
 
 
     //Serial.println("Sent simulated pulse");
