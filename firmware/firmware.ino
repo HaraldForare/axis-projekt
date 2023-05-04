@@ -448,7 +448,7 @@ void loop() {
             if (DEBUG_PRINTOUT) {
                 Serial.print("Max difference between numbers was only ");
                 Serial.print(max_difference);
-                Serial.print(", which is too small. Aborting here to avoid divide by zero");
+                Serial.print(", which is too small. Aborting here to avoid divide by zero\n");
             }
 
             return;
