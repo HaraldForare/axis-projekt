@@ -487,16 +487,19 @@ void loop() {
     }
 
 
+    double angle = atan2(source_direction[1], source_direction[0]);
+
     if (DEBUG_PRINTOUT) {
         Serial.print("Sound from: {x: ");
         Serial.print(source_direction[0]);
         Serial.print(", y: ");
         Serial.print(source_direction[1]);
-        Serial.print("}\n");
+        Serial.print("} (");
+
+        double angle_degrees = angle / (2.0*PI) * 360.0;
+        Serial.print(angle_degrees, 4);
+        Serial.print(" deg)\n");
     }
-
-
-    double angle = atan2(source_direction[1], source_direction[0]);
 
     Serial.println(angle, 8);
 
