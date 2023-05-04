@@ -395,6 +395,7 @@ void loop() {
     if (DEBUG_PRINTOUT) {
         Serial.print("It took "); Serial.print((double)three_pulses_time - (double)trigger_time); Serial.println(" us for three pulses to arrive");
         read_counters.DEBUG_print();
+        Serial.println();
     }
 
 
