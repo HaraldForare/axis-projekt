@@ -39,7 +39,7 @@
 // Set this to the time it takes for sound to pass through all microphones (t = s / v)
 // Max distance between two microphones
 // Exact value will be acquired from CAD (+ a small safety margin)
-#define FLUKE_SIGNAL_REJECTION_TIME_MICROS 5000  //800
+#define FLUKE_SIGNAL_REJECTION_TIME_MICROS 1200  //800
 #define ECHO_DISSIPATION_COOLDOWN_MILLIS 500
 
 
