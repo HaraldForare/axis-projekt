@@ -1,22 +1,41 @@
 Circuit: * C:\users\abbekasagas\Desktop\repos\axis-projekt\analog\condenser_mic_amp.asc
 
-Direct Newton iteration for .op point succeeded.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+Gmin = 0.00132923
+Gmin = 0.000142725
+Gmin = 1.5325e-05
+Gmin = 1.6455e-06
+Gmin = 1.76685e-07
+Gmin = 1.89714e-08
+Gmin = 2.03704e-09
+Gmin = 2.18725e-10
+Gmin = 2.34854e-11
+Gmin = 2.52173e-12
+Gmin = 2.70769e-13
+Gmin = 0
+Gmin stepping succeeded in finding the operating point.
 
-Date: Mon Apr 24 11:00:24 2023
-Total elapsed time: 0.122 seconds.
+
+Date: Mon Apr 24 11:49:02 2023
+Total elapsed time: 0.109 seconds.
 
 tnom = 27
 temp = 27
 method = modified trap
-totiter = 2709
-traniter = 2660
-tranpoints = 1195
-accept = 1145
-rejected = 50
-matrix size = 16
-fillins = 7
+totiter = 3155
+traniter = 2754
+tranpoints = 1212
+accept = 1160
+rejected = 52
+matrix size = 14
+fillins = 5
 solver = Normal
-Avg thread counts: 1.2/1.6/1.6/1.2
-Matrix Compiler1: 1.08 KB object code size  0.2/0.3/[0.2]
-Matrix Compiler2: off  [0.2]/0.3/0.2
+Avg thread counts: 1.2/1.5/1.5/1.2
+Matrix Compiler1: 1.66 KB object code size  0.5/0.4/[0.2]
+Matrix Compiler2: off  [0.2]/0.3/0.3
 
