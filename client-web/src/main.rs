@@ -1,6 +1,7 @@
-use actix_web::{web, App, HttpServer};
+use actix_web::{web::Data, App, HttpServer};
 use dotenv::dotenv;
 use std::sync::Mutex;
+//use util::camera::return_to_zero;
 
 mod routes;
 mod util;
@@ -10,8 +11,8 @@ async fn main() {
     dotenv().ok();
     let camera = util::camera::Camera::new();
     camera.pan(0).await;
-    let camera_mut = web::Data::new(Mutex::new(camera));
-    let current_pos: web::Data<Mutex<i16>> = web::Data::new(Mutex::new(0));
+    let camera_mut = Data::new(Mutex::new(camera));
+    let current_pos: Data<Mutex<i16>> = Data::new(Mutex::new(0));
 
     HttpServer::new(move || {
         App::new()

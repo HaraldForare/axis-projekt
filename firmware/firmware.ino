@@ -505,4 +505,3 @@ void loop() {
 
     delay(ECHO_DISSIPATION_COOLDOWN_MILLIS);
 }
-
