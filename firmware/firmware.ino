@@ -359,12 +359,13 @@ void loop() {
 
 
     // Wait for any counter to become active
-    while (!get_counters_trigger_state());  // TODO: Add timeout
-    
-
-
-    //Serial.println("Past loop");
-
+    uint8_t counters_trigger_state;
+    while (true) {
+        counters_trigger_state = get_counters_trigger_state();
+        if (counters_trigger_state) {  // Atleast one pulse has been detected
+            break;
+        }
+    }
 
     uint64_t trigger_time = micros();
 
@@ -372,19 +373,23 @@ void loop() {
 
     //Serial.println("First pulse detected!");
 
+
     while (true) {
-        if ((micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) || (micros() < trigger_time)) {
-            if (DEBUG_PRINTOUT) {
-                Serial.println("Timed out while waiting for the other two pulses");
-            }
-
-            return;
-        }
-
-        if (get_counters_trigger_state() == 0b00000111) {
+        counters_trigger_state = get_counters_trigger_state();
+        if (counters_trigger_state == 0b00000111) {  // All have been triggered
             //Serial.println("Got three pulses!");
             three_pulses_time = micros();
             break;
+        }
+
+        if ((micros() >= (trigger_time + FLUKE_SIGNAL_REJECTION_TIME_MICROS)) || (micros() < trigger_time)) {
+            if (DEBUG_PRINTOUT) {
+                Serial.print("Timed out while waiting for the other two pulses. Last trigger state was: ");
+                DEBUG_print_byte(counters_trigger_state);
+                Serial.println();
+            }
+
+            return;
         }
     }
 
