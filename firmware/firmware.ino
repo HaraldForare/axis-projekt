@@ -1,11 +1,4 @@
 
-/*
-#include <BasicLinearAlgebra.h>
-#include <ElementStorage.h>
-using namespace BLA;
-*/
-
-
 
 #define DEBUG_PRINTOUT true
 
