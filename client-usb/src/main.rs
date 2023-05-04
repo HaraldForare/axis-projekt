@@ -53,18 +53,19 @@ fn main() {
 
 fn parse_angle(buf: &[u8]) -> Option<i16> {
     let binding = buf.to_vec();
-    let angle: i16;
+    let deg: i16;
 
     let string = str::from_utf8(&binding)
         .unwrap_or("Invalid UTF-8 sequence")
         .trim_matches(|c| c == '\r' || c == '\n');
 
     if let Ok(n) = string.parse::<f32>() {
-        angle = n.to_degrees().round() as i16;
-        println!("Angle: {angle}");
+        deg = n.to_degrees().round() as i16;
+        println!("Angle: {deg}");
     } else {
         println!("{string}");
         return None;
     }
+    let angle = -((deg + 600) % 360 - 180);
     Some(angle)
 }
