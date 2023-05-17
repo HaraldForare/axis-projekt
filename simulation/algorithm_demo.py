@@ -9,7 +9,7 @@ from sound_source import get_random_sound_source_position
 from localizer import localize
 
 
-source_position = get_random_sound_source_position(2, 5)
+source_position = get_random_sound_source_position(1, 2)
 mic_positions = get_mic_positions()
 
 
